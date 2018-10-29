@@ -10,12 +10,19 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/areth/mobile-test.git"
+  },
   "keywords": [
     "mobile",
     "test"
   ],
   "author": "",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/areth/mobile-test/issues"
+  },
   "dependencies": {
     "commander": "^2.19.0",
     "mocha": "^5.2.0"
