@@ -2,7 +2,7 @@
 'use strict';
 
 const program = require('commander');
-const MobileTest = require('./');
+const MochaMobile = require('./');
 
 program
   .version('0.0.1')
@@ -32,7 +32,7 @@ if(!program.arch) {
   program.help(() => 'error: option `-a, --arch <architecture>` argument missing\n');
 }
 
-const test = new MobileTest(process.cwd(), {
+const test = new MochaMobile(process.cwd(), {
   arch: program.arch,
   doPrepare: program.onlyprep || !program.onlyrun,
   doRun: program.onlyrun || !program.onlyprep,
@@ -40,6 +40,6 @@ const test = new MobileTest(process.cwd(), {
 });
 test.run()
   .catch((err) => {
-    console.log(`mobile-test failed`);
+    console.log(`mocha-mobile failed`);
     process.exitCode = 1;
   });

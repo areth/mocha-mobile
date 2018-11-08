@@ -1,14 +1,14 @@
 {
-  "name": "mobile-test",
-  "version": "0.0.1",
-  "description": "mobile-test",
+  "name": "mocha-mobile",
+  "version": "0.0.2",
+  "description": "Test a node.js library on mobile devices with Mocha",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha --timeout 10000 --recursive"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/areth/mobile-test.git"
+    "url": "git+https://github.com/areth/mocha-mobile.git"
   },
   "keywords": [
     "mobile",
@@ -17,13 +17,13 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/areth/mobile-test/issues"
+    "url": "https://github.com/areth/mocha-mobile/issues"
   },
   "dependencies": {
     "commander": "^2.19.0",
     "mocha": "^5.2.0"
   },
   "bin": {
-    "mobile-test": "./src/cli.js"
+    "mocha-mobile": "./src/cli.js"
   }
 }

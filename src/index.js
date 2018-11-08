@@ -37,30 +37,10 @@ const defaultOptions = {
   mochaParams: [],
 };
 
-// const checkMochaInstalled = (sourcePath) => {
-//   // const scriptDir = __dirname;
-//   // __dirname = sourcePath;
-//   // console.log(__dirname);
-
-//   let mocha;
-//   try {
-//     mocha = require(sourcePath + '/node_modules/mocha');
-//   } catch (er) {
-//     mocha = null;
-//   }
-
-//   // __dirname = scriptDir;
-
-//   return mocha != null;
-// };
-
-class MobileTest {
+class MochaMobile {
   constructor(sourcePath, options) {
-    this.sourcePath = sourcePath;
-    // if(!checkMochaInstalled(this.sourcePath)) {
-    //   throw new Error('Mocha has to be installed');
-    // }
-
+    this.sourcePath = sourcePath || process.cwd();
+    
     this.options = Object.assign({}, defaultOptions, options);
     if(!this.options.arch) {
       throw new Error('Unknown architecture');
@@ -97,7 +77,7 @@ class MobileTest {
   }
 }
 
-module.exports = MobileTest;
+module.exports = MochaMobile;
 
 // exec(prepareAppCommand, (error, stdout, stderr) => {
 //   console.log(`${stdout}`);

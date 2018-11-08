@@ -48,8 +48,8 @@ android {
         def defaultIgnorePattern = '!.svn:!.git:!.ds_store:!*.scc:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~'
         ignoreAssetsPattern defaultIgnorePattern + ':<dir>android:<dir>ios'
         ignoreAssets defaultIgnorePattern + ':<dir>android:<dir>ios'
-        // ignoreAssetsPattern defaultIgnorePattern + ':<dir>mobile-test'
-        // ignoreAssets defaultIgnorePattern + ':<dir>mobile-test'
+        // ignoreAssetsPattern defaultIgnorePattern + ':<dir>mocha-mobile'
+        // ignoreAssets defaultIgnorePattern + ':<dir>mocha-mobile'
     }
     // doesn't work with absolute paths
     // applicationVariants.all { variant ->
