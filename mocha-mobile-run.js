@@ -1,3 +1,5 @@
+'use strict';
+
 const TEST_FAILED = 'RESULT:FAIL\n';
 const TEST_PASSED = 'RESULT:PASS\n';
 

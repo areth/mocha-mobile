@@ -51,14 +51,6 @@ android {
         // ignoreAssetsPattern defaultIgnorePattern + ':<dir>mocha-mobile'
         // ignoreAssets defaultIgnorePattern + ':<dir>mocha-mobile'
     }
-    // doesn't work with absolute paths
-    // applicationVariants.all { variant ->
-    //     variant.outputs.all {
-    //         if(project.hasProperty('appSrc')) {
-    //             outputFileName = appSrc + "android/output/" + outputFileName
-    //         }
-    //     }
-    // }
     adbOptions {
         timeOutInMs 100 * 1000
     }

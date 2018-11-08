@@ -1,22 +1,6 @@
-const exec = require('child_process').exec;
-const spawn = require('child_process').spawn;
+'use strict';
 
-const execPromise = (cmd) => {
-  return new Promise(function(resolve, reject) {
-    let execution = exec(cmd, { cwd: __dirname }, function(err, stdout, stderr) {
-      if (err) return reject(err);
-      // if(stdout) {
-      //   console.log(`${stdout}`);
-      // }
-      // if(stderr) {
-      //   console.log(`${stderr}`);
-      // }
-      resolve(stdout, stderr);
-    });
-    execution.stdout.pipe(process.stdout);
-    execution.stderr.pipe(process.stderr);
-  });
-};
+const spawn = require('child_process').spawn;
 
 const spawnPromise = (cmd, arg) => {
   return new Promise(function(resolve, reject) {
@@ -46,6 +30,10 @@ class MochaMobile {
       throw new Error('Unknown architecture');
     }
 
+    if(this.options.arch !== 'android') {
+      throw new Error('Sorry, only android architecture implemented so far.');
+    }
+
     // force use colors due to colors are switched off by dafault 
     // on alternative platforms
     const colorOptions = ['--colors', '-c', '--no-colors', '-C'];
@@ -59,7 +47,7 @@ class MochaMobile {
             
     if(this.options.doPrepare) {
       execution = execution.then(() => {
-        console.log("> Build and install an android app");
+        console.log("> Build and install mobile app");
         return spawnPromise(`../${this.options.arch}/prepare-${this.options.arch}-test.sh`,
           [this.sourcePath]);
       });
@@ -78,11 +66,3 @@ class MochaMobile {
 }
 
 module.exports = MochaMobile;
-
-// exec(prepareAppCommand, (error, stdout, stderr) => {
-//   console.log(`${stdout}`);
-//   console.log(`${stderr}`);
-//   if (error !== null) {
-//     console.log(`exec error: ${error}`);
-//   }
-// });

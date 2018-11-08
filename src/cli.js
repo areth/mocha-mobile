@@ -5,11 +5,11 @@ const program = require('commander');
 const MochaMobile = require('./');
 
 program
-  .version('0.0.1')
+  .version('0.0.2')
   .usage('--arch <architecture> [options] [mocha params ...]')
   .option('-a, --arch <architecture>', 'Architecture to run test (android|ios)')
   .option('--onlyprep', 'Only prepare test, don\'t run it')
-  .option('--onlyrun', 'Only run test, don\'t prepare it (test have to be prepared)');
+  .option('--onlyrun', 'Only run test, don\'t prepare it (test has to be prepared)');
 
 // treat unknown options as Mocha args
 const testArgs = [];
