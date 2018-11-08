@@ -13,13 +13,17 @@ adb $TARGET shell 'am force-stop nodejsmobile.test.testnode'
 # Clean the Android log
 adb $TARGET logcat -c
 
-TEST_PATH="$( cd "$( dirname "$0" )" && cd .. && cd .. && cd test && pwd )"
+#TEST_PATH="$( cd "$( dirname "$0" )" && cd .. && cd .. && cd test && pwd )"
+# All the test paths must begin with /test/...
+TEST_PATH="/test/"
 
 ARGS=$(echo $*)
 
 # Start the test app passing the test filename and directory to substitute
 ADB_START_COMMAND='am start -n nodejsmobile.test.testnode/nodejsmobile.test.testnode.MainActivity -e "nodeargs" "'$ARGS'" -e "substitutedir" "'$TEST_PATH'" '
 adb $TARGET shell "$ADB_START_COMMAND" > /dev/null
+# adb $TARGET shell 'logcat -b main -s TestNode:I'
+# adb $TARGET shell 'logcat | grep -F "`ps | grep nodejsmobile.test.testnode | cut -c10-15`"'
 # Wait for the test result to appear in the log
 adb $TARGET shell 'logcat -b main -v raw -s TestNode:I | (grep -q "^RESULT:" && kill -2 $(ps | grep "logcat" | sed -r "s/[[:graph:]]+[ \t]+([0-9]+).*/\1/g"))' < /dev/null
 
@@ -30,8 +34,10 @@ parseLogcat() {
 RESULT=$(parseLogcat)
 
 # Echo the raw stdout and stderr
-adb $TARGET shell 'logcat -d -b main -v raw -s TestNode:I | sed -E ''s/^RESULT:[A-Z]*//'' '
+adb $TARGET shell 'logcat -d -b main -v raw -s TestNode:I | grep -v "referenceTable" | sed -E ''s/^RESULT:[A-Z]*//'' '
 
-if [ $RESULT -eq 1 ]; then
-  exit $RESULT
+if [ "$RESULT" = "1" ]; then
+  exit 1
+else
+  exit 0
 fi

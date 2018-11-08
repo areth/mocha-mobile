@@ -1,2 +1,2 @@
-# mobile-test
-Test your node.js library on mobile devices with Mocha
+# mocha-mobile
+Test a node.js library on mobile devices with Mocha

@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.content.res.AssetManager;
+import android.text.TextUtils;
 import java.io.*;
 import java.lang.System;
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
@@ -47,21 +49,78 @@ public class MainActivity extends Activity {
             RunNode("node " + nodeArgs);
         } else {
             final String testFolderPath = this.getBaseContext().getFilesDir().getAbsolutePath() + "/test/";
-            final String mainjsPath = testFolderPath + "main-test.js";
+            // final String mainjsPath = testFolderPath + "main-test.js";
+            final String mainjsPath = testFolderPath + "node_modules/mobile-test/mocha-mobile-run.js";
+            //final String runMochaPath = testFolderPath + "mochaRun.js";
+            // final String runMochaPath = testFolderPath + "node_modules/mocha/bin/_mocha";
             String[] parts = nodeArgs.split(" ");
-            String newArgs = "";
+            ArrayList<String> newArgs = new ArrayList<String>();
+            ArrayList<String> mochaPrepArgs = new ArrayList<String>();
             // Node input flags go before main-test.js
             for (int i = 0; i < ( parts.length ); i++) {
-                if (nodeSubstituteDir == null) {
-                    newArgs += parts[i] + " ";
-                } else {
-                    //if there is a dir to substitute in the node arguments, do it.
-                    newArgs += parts[i].replace(nodeSubstituteDir,testFolderPath) + " ";
+                String arg = parts[i];
+                String flag = arg.split("=")[0];
+
+                // parameters preparation from node_modules/mocha/bin/mocha.js
+                switch (flag) {
+                    case "-d":
+                        mochaPrepArgs.add("--debug");
+                        newArgs.add("--no-timeouts");
+                        break;
+                    case "debug":
+                    case "--debug":
+                    case "--debug-brk":
+                    case "--inspect":
+                    case "--inspect-brk":
+                        mochaPrepArgs.add(arg);
+                        newArgs.add("--no-timeouts");
+                        break;
+                    case "-gc":
+                    case "--expose-gc":
+                        mochaPrepArgs.add("--expose-gc");
+                        break;
+                    case "--gc-global":
+                    case "--es_staging":
+                    case "--no-deprecation":
+                    case "--no-warnings":
+                    case "--prof":
+                    case "--log-timer-events":
+                    case "--throw-deprecation":
+                    case "--trace-deprecation":
+                    case "--trace-warnings":
+                    case "--use_strict":
+                    case "--allow-natives-syntax":
+                    case "--perf-basic-prof":
+                    case "--napi-modules":
+                        mochaPrepArgs.add(arg);
+                        break;
+                    default:
+                        if (arg.indexOf("--harmony") == 0 
+                            || arg.indexOf("--trace") == 0
+                            || arg.indexOf("--icu-data-dir") == 0
+                            || arg.indexOf("--max-old-space-size") == 0
+                            || arg.indexOf("--preserve-symlinks") == 0) {
+                            mochaPrepArgs.add(arg);
+                        } else {
+                            // general mocha parameters
+                            if (nodeSubstituteDir == null) {
+                                newArgs.add(parts[i]);
+                            } else {
+                                //if there is a dir to substitute in the node arguments, do it.
+                                newArgs.add(parts[i].replace(nodeSubstituteDir, testFolderPath));
+                            }
+                        }
+                    break;
                 }
+
+                
             }
             // Last arg is the test filename
-            newArgs = "node -r " + mainjsPath + " " + newArgs;
-            RunNode(newArgs);
+            String newArgsStr = String.format("node%s %s%s",
+                mochaPrepArgs.isEmpty() ? "" : " " + TextUtils.join(" ", mochaPrepArgs),
+                mainjsPath,
+                newArgs.isEmpty() ? "" : " " + TextUtils.join(" ", newArgs));
+            RunNode(newArgsStr);
         }
     }
 
@@ -81,9 +140,9 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 startNodeWithArguments(
-                        parts,
-                        testFolderPath,
-                        true);
+                    parts,
+                    testFolderPath,
+                    true);
             }
         });
         mainNodeThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {

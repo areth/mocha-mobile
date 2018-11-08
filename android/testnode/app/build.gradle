@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "nodejsmobile.test.testnode"
         minSdkVersion 23
@@ -33,12 +33,34 @@ android {
     }
     sourceSets {
         main {
-            jniLibs.srcDirs '../../../../../out_android/'
-            assets.srcDirs += '../../../../../test/'
+            // jniLibs.srcDirs '../../../../../out_android/'
+            // assets.srcDirs += '../../../../../test/'
+            jniLibs.srcDirs 'libnode/bin/'
+            if(project.hasProperty('appSrc')) {
+                assets.srcDirs += appSrc 
+            }
         }
     }
     aaptOptions {
         ignoreAssets 'person.jpg.gz'
+
+        // don't pack mobile apps into mobile apps
+        def defaultIgnorePattern = '!.svn:!.git:!.ds_store:!*.scc:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        ignoreAssetsPattern defaultIgnorePattern + ':<dir>android:<dir>ios'
+        ignoreAssets defaultIgnorePattern + ':<dir>android:<dir>ios'
+        // ignoreAssetsPattern defaultIgnorePattern + ':<dir>mobile-test'
+        // ignoreAssets defaultIgnorePattern + ':<dir>mobile-test'
+    }
+    // doesn't work with absolute paths
+    // applicationVariants.all { variant ->
+    //     variant.outputs.all {
+    //         if(project.hasProperty('appSrc')) {
+    //             outputFileName = appSrc + "android/output/" + outputFileName
+    //         }
+    //     }
+    // }
+    adbOptions {
+        timeOutInMs 100 * 1000
     }
 }
 

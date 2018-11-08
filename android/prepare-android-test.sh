@@ -10,23 +10,24 @@ else
   TARGET="-s $DEVICE_ID"
 fi
 
-SCRIPT_BASE_DIR="$( cd "$( dirname "$0" )" && pwd )"
-NODEJS_BASE_DIR="$( cd "$( dirname "$0" )" && cd .. && cd .. && cd .. && pwd )"
+APP_DIR=$1
+#SCRIPT_BASE_DIR="$( cd "$( dirname "$0" )" && pwd )"
+#NODEJS_BASE_DIR="$( cd "$( dirname "$0" )" && cd .. && cd .. && cd .. && pwd )"
 TEST_APP_BASE_DIR="$( cd "$( dirname "$0" )" && cd testnode/ && pwd )"
-TEST_PROXY_TARGETDIR="$( cd "$NODEJS_BASE_DIR" && mkdir -p ./out/android.release/ && cd ./out/android.release/ && pwd )"
-
+#TEST_PROXY_TARGETDIR="$( cd "$NODEJS_BASE_DIR" && mkdir -p ./out/android.release/ && cd ./out/android.release/ && pwd )"
 # Build the Android test app
-( cd "$TEST_APP_BASE_DIR" && ./gradlew assembleDebug )
+# ( cd "$TEST_APP_BASE_DIR" && ./gradlew assembleDebug )
+( cd "$TEST_APP_BASE_DIR" && ./gradlew assembleDebug -PappSrc=$APP_DIR)
 
 # Copy the Android proxy to the target directory.
-cp "$SCRIPT_BASE_DIR/node-android-proxy.sh" "$TEST_PROXY_TARGETDIR/node"
+#cp "$SCRIPT_BASE_DIR/node-android-proxy.sh" "$TEST_PROXY_TARGETDIR/node"
 
 # Kill the test app if it's running
 adb $TARGET shell 'am force-stop nodejsmobile.test.testnode'
 # Clean the Android log
 adb logcat -c
 
-adb $TARGET install -r "$TEST_APP_BASE_DIR/app/build/outputs/apk/app-debug.apk"
+adb $TARGET install -r "$TEST_APP_BASE_DIR/app/build/outputs/apk/debug/app-debug.apk"
 
 # Start the test app without parameter in order to copy the assets to a writable location
 adb $TARGET shell 'am start -n nodejsmobile.test.testnode/nodejsmobile.test.testnode.MainActivity' > /dev/null
@@ -43,6 +44,11 @@ RESULT=$(parseLogcat)
 # Echo the raw stdout and stderr
 adb $TARGET shell 'logcat -d -b main -v raw -s TestNode:V'
 
-if [ $RESULT -eq 1 ]; then
-  exit $RESULT
+# if [ $RESULT -eq 1 ]; then
+#   exit $RESULT
+# fi
+if [ "$RESULT" = "1" ]; then
+  exit 1
+else
+  exit 0
 fi

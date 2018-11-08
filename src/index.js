@@ -1,16 +1,108 @@
-#!/usr/bin/env node
-'use strict';
+const exec = require('child_process').exec;
+const spawn = require('child_process').spawn;
 
-const program = require('commander');
+const execPromise = (cmd) => {
+  return new Promise(function(resolve, reject) {
+    let execution = exec(cmd, { cwd: __dirname }, function(err, stdout, stderr) {
+      if (err) return reject(err);
+      // if(stdout) {
+      //   console.log(`${stdout}`);
+      // }
+      // if(stderr) {
+      //   console.log(`${stderr}`);
+      // }
+      resolve(stdout, stderr);
+    });
+    execution.stdout.pipe(process.stdout);
+    execution.stderr.pipe(process.stderr);
+  });
+};
 
-program
-  .version('0.0.1')
-  .usage('[options] <file ...>')
-  // .option('-i, --integer <n>', 'An integer argument', parseInt)
-  // .option('-f, --float <n>', 'A float argument', parseFloat)
-  // .option('-r, --range <a>..<b>', 'A range', range)
-  // .option('-l, --list <items>', 'A list', list)
-  // .option('-o, --optional [value]', 'An optional value')
-  // .option('-c, --collect [value]', 'A repeatable value', collect, [])
-  // .option('-v, --verbose', 'A value that can be increased', increaseVerbosity, 0)
-  .parse(process.argv);
+const spawnPromise = (cmd, arg) => {
+  return new Promise(function(resolve, reject) {
+    let execution = spawn(cmd, arg || [], { cwd: __dirname, stdio: 'inherit' });
+
+    execution.on('close', (code) => {
+      if (code !== 0) {
+        return reject(code);
+      }
+      resolve();
+    });
+  });
+};
+
+const defaultOptions = {
+  doPrepare: true,
+  doRun: true,
+  mochaParams: [],
+};
+
+// const checkMochaInstalled = (sourcePath) => {
+//   // const scriptDir = __dirname;
+//   // __dirname = sourcePath;
+//   // console.log(__dirname);
+
+//   let mocha;
+//   try {
+//     mocha = require(sourcePath + '/node_modules/mocha');
+//   } catch (er) {
+//     mocha = null;
+//   }
+
+//   // __dirname = scriptDir;
+
+//   return mocha != null;
+// };
+
+class MobileTest {
+  constructor(sourcePath, options) {
+    this.sourcePath = sourcePath;
+    // if(!checkMochaInstalled(this.sourcePath)) {
+    //   throw new Error('Mocha has to be installed');
+    // }
+
+    this.options = Object.assign({}, defaultOptions, options);
+    if(!this.options.arch) {
+      throw new Error('Unknown architecture');
+    }
+
+    // force use colors due to colors are switched off by dafault 
+    // on alternative platforms
+    const colorOptions = ['--colors', '-c', '--no-colors', '-C'];
+    if(!this.options.mochaParams.filter(opt => colorOptions.includes(opt)).length) {
+      this.options.mochaParams.push('--colors');
+    }
+  }
+
+  run() {
+    let execution = Promise.resolve();
+            
+    if(this.options.doPrepare) {
+      execution = execution.then(() => {
+        console.log("> Build and install an android app");
+        return spawnPromise(`../${this.options.arch}/prepare-${this.options.arch}-test.sh`,
+          [this.sourcePath]);
+      });
+    }
+
+    if(this.options.doRun) {
+      execution = execution.then(() => {
+        console.log("> Run test");
+        return spawnPromise(`../${this.options.arch}/node-${this.options.arch}-proxy.sh`,
+          this.options.mochaParams);
+      });
+    }
+
+    return execution;
+  }
+}
+
+module.exports = MobileTest;
+
+// exec(prepareAppCommand, (error, stdout, stderr) => {
+//   console.log(`${stdout}`);
+//   console.log(`${stderr}`);
+//   if (error !== null) {
+//     console.log(`exec error: ${error}`);
+//   }
+// });

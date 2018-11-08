@@ -4,11 +4,7 @@
   "description": "mobile-test",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha --timeout 10000 --recursive",
-    "test:debug": "DEBUG=*:test:* mocha --timeout 10000 --recursive",
-    "test:android": "mobile-test --arch android",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "test": "mocha --timeout 10000 --recursive"
   },
   "repository": {
     "type": "git",
@@ -27,18 +23,7 @@
     "commander": "^2.19.0",
     "mocha": "^5.2.0"
   },
-  "devDependencies": {
-    "babel-eslint": "^8.2.3",
-    "chai": "^4.1.2",
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-chai-friendly": "^0.4.1",
-    "eslint-plugin-import": "^2.12.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.8.2",
-    "gulp": "^3.9.1",
-    "gulp-shell": "^0.6.5",
-    "sinon": "^5.0.10",
-    "sinon-chai": "^3.2.0"
+  "bin": {
+    "mobile-test": "./src/cli.js"
   }
 }
