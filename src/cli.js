@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 'use strict';
 
 const program = require('commander');
@@ -18,8 +19,8 @@ const mochaArgs = [];
 const [...args] = process.argv;
 let lastArgIsTest = false;
 args.forEach((arg, i) => {
-  let isOptionArg = arg.charAt(0) !== '-';
-  if(i < 2 || program.optionFor(arg) || (lastArgIsTest && isOptionArg)) {
+  const isOptionArg = arg.charAt(0) !== '-';
+  if (i < 2 || program.optionFor(arg) || (lastArgIsTest && isOptionArg)) {
     testArgs.push(arg);
     lastArgIsTest = true;
   } else {
@@ -29,7 +30,7 @@ args.forEach((arg, i) => {
 });
 program.parse(testArgs);
 
-if(!program.arch) {
+if (!program.arch) {
   program.help(() => 'error: option `-a, --arch <architecture>` argument missing\n');
 }
 
@@ -42,6 +43,6 @@ const test = new MochaMobile(process.cwd(), {
 });
 test.run()
   .catch((err) => {
-    console.log(`mocha-mobile failed`);
+    console.log('mocha-mobile failed');
     process.exitCode = 1;
   });
