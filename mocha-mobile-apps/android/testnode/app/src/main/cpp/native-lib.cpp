@@ -19,7 +19,7 @@ int startNode(int argc, char *argv[]) {
 // Forward declaration
 int start_redirecting_stdout_stderr();
 
-const char *TAG = "TestNode";
+const char *TAG = "MochaMobile";
 JNIEnv* cacheEnvPointer = NULL;
 
 void AtExitHook()

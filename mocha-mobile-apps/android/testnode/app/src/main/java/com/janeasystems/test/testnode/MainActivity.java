@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.content.res.AssetManager;
+import android.content.res.AssetFileDescriptor;
 import android.text.TextUtils;
 import java.io.*;
 import java.lang.System;
 import java.util.ArrayList;
+import java.nio.ByteBuffer; 
+import java.nio.channels.*;
 
 public class MainActivity extends Activity {
 
     private static AssetManager assetManager = null;
-    private static String TAG = "TestNode";
+    private static String TAG = "MochaMobile";
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -193,12 +196,28 @@ public class MainActivity extends Activity {
     }
 
     private void copyFile(InputStream in, OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[16*1024];
         int read;
         while ((read = in.read(buffer)) != -1) {
             out.write(buffer, 0, read);
         }
     }
+
+    // private void copyAssetFile(String srcFolder, String destPath)  throws IOException {
+    //     AssetFileDescriptor afd = assetManager.openFd(srcFolder);
+    //     FileChannel inChannel = new FileInputStream(afd.getFileDescriptor()).getChannel();
+    //     new File(destPath).createNewFile();
+    //     FileChannel outChannel = new FileOutputStream(destPath).getChannel();
+    //     try {
+    //         //inChannel.transferTo(0, inChannel.size(), outChannel);
+    //         inChannel.transferTo(afd.getStartOffset(), afd.getLength(), outChannel);
+    //     } finally {
+    //         if (inChannel != null)
+    //             inChannel.close();
+    //         if (outChannel != null)
+    //             outChannel.close();
+    //     }
+    // }
 
     private void deleteFolderRecursively(File file) throws IOException {
         for (File childFile : file.listFiles()) {

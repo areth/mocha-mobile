@@ -18,6 +18,7 @@ const spawnPromise = (cmd, arg) => {
 const defaultOptions = {
   doPrepare: true,
   doRun: true,
+  ignorePattern: '',
   mochaParams: [],
 };
 
@@ -48,15 +49,19 @@ class MochaMobile {
     if(this.options.doPrepare) {
       execution = execution.then(() => {
         console.log("> Build and install mobile app");
-        return spawnPromise(`../${this.options.arch}/prepare-${this.options.arch}-test.sh`,
-          [this.sourcePath]);
+        const params = [this.sourcePath];
+        if(this.options.ignorePattern) {
+          params.push(`--ignore=${this.options.ignorePattern}`);
+        }
+        return spawnPromise(`../mocha-mobile-apps/${this.options.arch}/prepare-${this.options.arch}-test.sh`,
+          params);
       });
     }
 
     if(this.options.doRun) {
       execution = execution.then(() => {
         console.log("> Run test");
-        return spawnPromise(`../${this.options.arch}/node-${this.options.arch}-proxy.sh`,
+        return spawnPromise(`../mocha-mobile-apps/${this.options.arch}/node-${this.options.arch}-proxy.sh`,
           this.options.mochaParams);
       });
     }

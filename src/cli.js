@@ -8,6 +8,7 @@ program
   .version('0.0.2')
   .usage('--arch <architecture> [options] [mocha params ...]')
   .option('-a, --arch <architecture>', 'Architecture to run test (android|ios)')
+  .option('--ignore <pattern>', 'Files pattern to ignore during mobile app assembling `:!*.scc:.*:<dir>_*:!CVS`')
   .option('--onlyprep', 'Only prepare test, don\'t run it')
   .option('--onlyrun', 'Only run test, don\'t prepare it (test has to be prepared)');
 
@@ -36,6 +37,7 @@ const test = new MochaMobile(process.cwd(), {
   arch: program.arch,
   doPrepare: program.onlyprep || !program.onlyrun,
   doRun: program.onlyrun || !program.onlyprep,
+  ignorePattern: program.ignore,
   mochaParams: mochaArgs,
 });
 test.run()

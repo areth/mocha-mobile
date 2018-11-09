@@ -22,19 +22,19 @@ ARGS=$(echo $*)
 # Start the test app passing the test filename and directory to substitute
 ADB_START_COMMAND='am start -n nodejsmobile.test.testnode/nodejsmobile.test.testnode.MainActivity -e "nodeargs" "'$ARGS'" -e "substitutedir" "'$TEST_PATH'" '
 adb $TARGET shell "$ADB_START_COMMAND" > /dev/null
-# adb $TARGET shell 'logcat -b main -s TestNode:I'
+# adb $TARGET shell 'logcat -b main -s MochaMobile:I'
 # adb $TARGET shell 'logcat | grep -F "`ps | grep nodejsmobile.test.testnode | cut -c10-15`"'
 # Wait for the test result to appear in the log
-adb $TARGET shell 'logcat -b main -v raw -s TestNode:I | (grep -q "^RESULT:" && kill -2 $(ps | grep "logcat" | sed -r "s/[[:graph:]]+[ \t]+([0-9]+).*/\1/g"))' < /dev/null
+adb $TARGET shell 'logcat -b main -v raw -s MochaMobile:I | (grep -q "^RESULT:" && kill -2 $(ps | grep "logcat" | sed -r "s/[[:graph:]]+[ \t]+([0-9]+).*/\1/g"))' < /dev/null
 
 # Return 0 if the test passed, 1 if it failed
 parseLogcat() {
-  adb $TARGET shell 'logcat -d -b main -v raw -s TestNode:I | grep -m 1 "^RESULT:" | sed -e ''s/RESULT:PASS/0/'' -e ''s/RESULT:FAIL/1/'' '
+  adb $TARGET shell 'logcat -d -b main -v raw -s MochaMobile:I | grep -m 1 "^RESULT:" | sed -e ''s/RESULT:PASS/0/'' -e ''s/RESULT:FAIL/1/'' '
 }
 RESULT=$(parseLogcat)
 
 # Echo the raw stdout and stderr
-adb $TARGET shell 'logcat -d -b main -v raw -s TestNode:I | grep -v "referenceTable" | sed -E ''s/^RESULT:[A-Z]*//'' '
+adb $TARGET shell 'logcat -d -b main -v raw -s MochaMobile:I | grep -v "referenceTable" | sed -E ''s/^RESULT:[A-Z]*//'' '
 
 if [ "$RESULT" = "1" ]; then
   exit 1
