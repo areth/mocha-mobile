@@ -9,7 +9,7 @@ else
 fi
 
 # Kill the test app if it's running
-adb $TARGET shell 'am force-stop nodejsmobile.test.testnode'
+adb $TARGET shell 'am force-stop testdomain.test.mochamobile'
 # Clean the Android log
 adb $TARGET logcat -c
 
@@ -20,10 +20,10 @@ TEST_PATH="/test/"
 ARGS=$(echo $*)
 
 # Start the test app passing the test filename and directory to substitute
-ADB_START_COMMAND='am start -n nodejsmobile.test.testnode/nodejsmobile.test.testnode.MainActivity -e "nodeargs" "'$ARGS'" -e "substitutedir" "'$TEST_PATH'" '
+ADB_START_COMMAND='am start -n testdomain.test.mochamobile/testdomain.test.mochamobile.MainActivity -e "nodeargs" "'$ARGS'" -e "substitutedir" "'$TEST_PATH'" '
 adb $TARGET shell "$ADB_START_COMMAND" > /dev/null
 # adb $TARGET shell 'logcat -b main -s MochaMobile:I'
-# adb $TARGET shell 'logcat | grep -F "`ps | grep nodejsmobile.test.testnode | cut -c10-15`"'
+# adb $TARGET shell 'logcat | grep -F "`ps | grep testdomain.test.mochamobile | cut -c10-15`"'
 # Wait for the test result to appear in the log
 adb $TARGET shell 'logcat -b main -v raw -s MochaMobile:I | (grep -q "^RESULT:" && kill -2 $(ps | grep "logcat" | sed -r "s/[[:graph:]]+[ \t]+([0-9]+).*/\1/g"))' < /dev/null
 

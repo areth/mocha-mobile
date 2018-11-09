@@ -32,7 +32,7 @@ void AtExitHook()
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_nodejsmobile_test_testnode_MainActivity_startNodeWithArguments(
+Java_testdomain_test_mochamobile_MainActivity_startNodeWithArguments(
         JNIEnv *env,
         jobject /* this */,
         jobjectArray arguments,

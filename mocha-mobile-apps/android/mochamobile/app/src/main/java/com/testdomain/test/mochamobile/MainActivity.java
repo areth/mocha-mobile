@@ -1,4 +1,4 @@
-package nodejsmobile.test.testnode;
+package testdomain.test.mochamobile;
 
 import android.app.Activity;
 import android.os.Bundle;

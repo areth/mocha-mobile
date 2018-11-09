@@ -44,7 +44,7 @@ while [ $# -gt 0 ]; do
 done
 #SCRIPT_BASE_DIR="$( cd "$( dirname "$0" )" && pwd )"
 #NODEJS_BASE_DIR="$( cd "$( dirname "$0" )" && cd .. && cd .. && cd .. && pwd )"
-TEST_APP_BASE_DIR="$( cd "$( dirname "$0" )" && cd testnode/ && pwd )"
+TEST_APP_BASE_DIR="$( cd "$( dirname "$0" )" && cd mochamobile/ && pwd )"
 #TEST_PROXY_TARGETDIR="$( cd "$NODEJS_BASE_DIR" && mkdir -p ./out/android.release/ && cd ./out/android.release/ && pwd )"
 # Build the Android test app
 # echo $APP_DIR
@@ -58,14 +58,14 @@ TEST_APP_BASE_DIR="$( cd "$( dirname "$0" )" && cd testnode/ && pwd )"
 #cp "$SCRIPT_BASE_DIR/node-android-proxy.sh" "$TEST_PROXY_TARGETDIR/node"
 
 # Kill the test app if it's running
-adb $TARGET shell 'am force-stop nodejsmobile.test.testnode'
+adb $TARGET shell 'am force-stop testdomain.test.mochamobile'
 # Clean the Android log
 adb logcat -c
 
 adb $TARGET install -r "$TEST_APP_BASE_DIR/app/build/outputs/apk/debug/app-debug.apk"
 
 # Start the test app without parameter in order to copy the assets to a writable location
-adb $TARGET shell 'am start -n nodejsmobile.test.testnode/nodejsmobile.test.testnode.MainActivity' > /dev/null
+adb $TARGET shell 'am start -n testdomain.test.mochamobile/testdomain.test.mochamobile.MainActivity' > /dev/null
 
 # Wait for the installation result to appear in the log
 adb $TARGET shell 'logcat -b main -v raw -s MochaMobile:V | (grep -q "^COPYASSETS:" && kill -2 $(ps | grep "logcat" | sed -r "s/[[:graph:]]+[ \t]+([0-9]+).*/\1/g"))' < /dev/null
