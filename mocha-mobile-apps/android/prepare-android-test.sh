@@ -10,38 +10,7 @@ else
   TARGET="-s $DEVICE_ID"
 fi
 
-APP_DIR=$1
-# while getopts ":a:p:" opt; do
-#   case $opt in
-#     a) arg_1="$OPTARG"
-#     ;;
-#     p) p_out="$OPTARG"
-#     ;;
-#     \?) echo "Invalid option -$OPTARG" >&2
-#     ;;
-#   esac
-# done
-# while getopts ":p:" opt; do
-#   case $opt in
-#     p) APP_IGNORE="$OPTARG"
-#     ;;
-#     \?) echo "Invalid option -$OPTARG" >&2
-#     ;;
-#   esac
-# done
-while [ $# -gt 0 ]; do
-  case "$1" in
-    --ignore=*)
-      APP_IGNORE="${1#*=}"
-      ;;
-    # *)
-    #   printf "***************************\n"
-    #   printf "* Error: Invalid argument.*\n"
-    #   printf "***************************\n"
-    #   exit 1
-  esac
-  shift
-done
+# APP_DIR=$1
 #SCRIPT_BASE_DIR="$( cd "$( dirname "$0" )" && pwd )"
 #NODEJS_BASE_DIR="$( cd "$( dirname "$0" )" && cd .. && cd .. && cd .. && pwd )"
 TEST_APP_BASE_DIR="$( cd "$( dirname "$0" )" && cd mochamobile/ && pwd )"
@@ -52,7 +21,7 @@ TEST_APP_BASE_DIR="$( cd "$( dirname "$0" )" && cd mochamobile/ && pwd )"
 # exit 0
 # ( cd "$TEST_APP_BASE_DIR" && ./gradlew assembleDebug )
 # ( cd "$TEST_APP_BASE_DIR" && ./gradlew assembleDebug -PappSrc=$APP_DIR -PappIgnore=$APP_IGNORE)
-( cd "$TEST_APP_BASE_DIR" && ./gradlew assembleDebug -PappArgs="$APP_DIR,$APP_IGNORE")
+( cd "$TEST_APP_BASE_DIR" && ./gradlew assembleDebug)
 
 # Copy the Android proxy to the target directory.
 #cp "$SCRIPT_BASE_DIR/node-android-proxy.sh" "$TEST_PROXY_TARGETDIR/node"
@@ -74,7 +43,7 @@ adb $TARGET shell 'logcat -b main -v raw -s MochaMobile:V | (grep -q "^COPYASSET
 parseLogcat() {
   adb $TARGET shell 'logcat -d -b main -v raw -s MochaMobile:V | grep -m 1 "^COPYASSETS:" | sed -e ''s/COPYASSETS:PASS/0/'' -e ''s/COPYASSETS:FAIL/1/'' '
 }
-RESULT=$(parseLogcat)
+RESULT=$(parseLogcat | sed 's/\r$//')
 
 # Echo the raw stdout and stderr
 adb $TARGET shell 'logcat -d -b main -v raw -s MochaMobile:V'
@@ -82,8 +51,8 @@ adb $TARGET shell 'logcat -d -b main -v raw -s MochaMobile:V'
 # if [ $RESULT -eq 1 ]; then
 #   exit $RESULT
 # fi
-if [ "$RESULT" = "1" ]; then
-  exit 1
-else
+if [ $RESULT = "0" ]; then
   exit 0
+else
+  exit 1
 fi

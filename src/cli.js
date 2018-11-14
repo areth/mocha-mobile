@@ -43,6 +43,6 @@ const test = new MochaMobile(process.cwd(), {
 });
 test.run()
   .catch((err) => {
-    console.log('mocha-mobile failed');
+    console.log(`mocha-mobile failed: ${err}`);
     process.exitCode = 1;
   });

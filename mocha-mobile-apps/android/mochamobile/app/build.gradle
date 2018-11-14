@@ -39,33 +39,34 @@ android {
             // if(project.hasProperty('appSrc')) {
             //     assets.srcDirs += appSrc 
             // }
-            if (project.hasProperty("appArgs")) {
-                def aargs=appArgs.split(",")
-                def appSrc = aargs[0]
-                assets.srcDirs += appSrc
-            }
+            // if (project.hasProperty("appArgs")) {
+            //     def aargs=appArgs.split(",")
+            //     def appSrc = aargs[0]
+            //     assets.srcDirs += appSrc
+            // }
+            assets.srcDirs += '../../../sources'
         }
     }
     aaptOptions {
         ignoreAssets 'person.jpg.gz'
 
-        // don't pack mobile apps into mobile apps
-        def defaultIgnorePattern = '!.svn:!.git:!.ds_store:!*.scc:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~'
-        //defaultIgnorePattern += ':**/mocha-mobile/android/:**/mocha-mobile/ios/' //':<dir>mocha-mobile'
-        //defaultIgnorePattern += ':<dir>mocha-mobile'
-        defaultIgnorePattern += ':mocha-mobile-apps'
-        //if(project.hasProperty('appIgnore') && !(appIgnore?.trim())) {
-        def appIgnore = ''
-        if (project.hasProperty("appArgs")) {
-            def aargs=appArgs.split(",")
-            if(aargs.length > 1) {
-                appIgnore = aargs[1]
-            }
-        }
-        if(appIgnore?.trim()) {
-            defaultIgnorePattern += (appIgnore[0] == ':' ? "" : ":") + appIgnore
-        }
-        ignoreAssets defaultIgnorePattern
+        // // don't pack mobile apps into mobile apps
+        // def defaultIgnorePattern = '!.svn:!.git:!.ds_store:!*.scc:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        // //defaultIgnorePattern += ':**/mocha-mobile/android/:**/mocha-mobile/ios/' //':<dir>mocha-mobile'
+        // //defaultIgnorePattern += ':<dir>mocha-mobile'
+        // defaultIgnorePattern += ':mocha-mobile-apps'
+        // //if(project.hasProperty('appIgnore') && !(appIgnore?.trim())) {
+        // def appIgnore = ''
+        // if (project.hasProperty("appArgs")) {
+        //     def aargs=appArgs.split(",")
+        //     if(aargs.length > 1) {
+        //         appIgnore = aargs[1]
+        //     }
+        // }
+        // if(appIgnore?.trim()) {
+        //     defaultIgnorePattern += (appIgnore[0] == ':' ? "" : ":") + appIgnore
+        // }
+        // ignoreAssets defaultIgnorePattern
     }
     adbOptions {
         timeOutInMs 100 * 1000

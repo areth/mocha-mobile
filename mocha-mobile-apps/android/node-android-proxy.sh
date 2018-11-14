@@ -31,13 +31,13 @@ adb $TARGET shell 'logcat -b main -v raw -s MochaMobile:I | (grep -q "^RESULT:" 
 parseLogcat() {
   adb $TARGET shell 'logcat -d -b main -v raw -s MochaMobile:I | grep -m 1 "^RESULT:" | sed -e ''s/RESULT:PASS/0/'' -e ''s/RESULT:FAIL/1/'' '
 }
-RESULT=$(parseLogcat)
+RESULT=$(parseLogcat | sed 's/\r$//')
 
 # Echo the raw stdout and stderr
 adb $TARGET shell 'logcat -d -b main -v raw -s MochaMobile:I | grep -v "referenceTable" | sed -E ''s/^RESULT:[A-Z]*//'' '
 
-if [ "$RESULT" = "1" ]; then
-  exit 1
-else
+if [ $RESULT = "0" ]; then
   exit 0
+else
+  exit 1
 fi

@@ -35,10 +35,15 @@ public class MainActivity extends Activity {
             // Note: use Log.v to keep the app logging diversified from
             // the node logging that uses Log.i and Log.e
             Log.v(TAG, "No input args, copying assets...");
-            this.assetManager = this.getAssets();
+            //this.assetManager = this.getAssets();
             try {
-                copyTestAssets();
-            } catch (IOException e) {
+                //copyTestAssets();
+                clearDestFolder(this.getBaseContext().getFilesDir().getAbsolutePath() + "/test/");
+                Decompress.unzipFromAssets(this.getBaseContext(),
+                    "appsrc.zip",
+                    this.getBaseContext().getFilesDir().getAbsolutePath() + "/test/");
+            } catch (Exception e) {
+                Log.e(TAG, "asset work", e);
                 e.printStackTrace();
                 Log.v(TAG, "COPYASSETS:FAIL");
                 return;
@@ -164,6 +169,14 @@ public class MainActivity extends Activity {
             deleteFolderRecursively(folderObject);
         }
         enumerateAssetFolder("", destFolder);
+    }
+
+    private void clearDestFolder(String path) throws IOException {
+        String destFolder = path;
+        File folderObject = new File(destFolder);
+        if (folderObject.exists()) {
+            deleteFolderRecursively(folderObject);
+        }
     }
 
     private void enumerateAssetFolder(String srcFolder, String destPath) throws IOException {
