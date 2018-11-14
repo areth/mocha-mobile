@@ -57,10 +57,7 @@ public class MainActivity extends Activity {
             RunNode("node " + nodeArgs);
         } else {
             final String testFolderPath = this.getBaseContext().getFilesDir().getAbsolutePath() + "/test/";
-            // final String mainjsPath = testFolderPath + "main-test.js";
             final String mainjsPath = testFolderPath + "node_modules/mocha-mobile/mocha-mobile-run.js";
-            //final String runMochaPath = testFolderPath + "mochaRun.js";
-            // final String runMochaPath = testFolderPath + "node_modules/mocha/bin/_mocha";
             String[] parts = nodeArgs.split(" ");
             ArrayList<String> newArgs = new ArrayList<String>();
             ArrayList<String> mochaPrepArgs = new ArrayList<String>();

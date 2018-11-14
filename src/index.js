@@ -77,7 +77,7 @@ class MochaMobile {
 
       execution = execution.then(() => {
         return new Promise((resolve, reject) => {
-          console.log('> Check app sources');
+          console.log('> Prepare app sources');
           glob('**/*', { cwd: this.sourcePath, ignore: ignores, follow: true, mark: true },
             (err, files) => {
               if(err) {
@@ -87,7 +87,6 @@ class MochaMobile {
               const folderStat = files.map(file => [ file, fs.statSync(file) ]);
               sourceStat = crypto.createHash('sha1')
                 .update(JSON.stringify(folderStat)).digest('hex');
-              console.log(sourceStat);
 
               fs.readFile(sourceStatFilename, 'utf8', function(err, data) {
                 return resolve(err || data !== sourceStat);
@@ -96,37 +95,37 @@ class MochaMobile {
         });
       })
       .then(sourceTouched => {
-        console.log('> Prepare app sources');
-        const archive = archiver('zip');
-        const appSrcTmp = fs.createWriteStream(tmpFilename);
-        archive.pipe(appSrcTmp);
-        
-        // archive.on('entry', entry => {
-        //   if(entry.name.slice(-1) == '/') {
-        //     console.log(entry.name)  
-        //   }
-        // });
+        if(sourceTouched) {
+          console.log('  Archive sources');
+          const archive = archiver('zip');
+          const appSrcTmp = fs.createWriteStream(tmpFilename);
+          archive.pipe(appSrcTmp);
+          
+          return archive
+            .glob('**/*', { cwd: this.sourcePath, ignore: ignores, follow: true, mark: true })
+            .finalize();
+        }
 
-        return archive
-          .glob('**/*', { cwd: this.sourcePath, ignore: ignores, follow: true, mark: true })
-          .finalize();
+        return 'skip';
       })
-      .then(() => Promise.all([ getHash(tmpFilename), getHash(archFilename) ]))
-      .then(hashes => {
-        console.log(hashes);
-        if(hashes[0] === hashes[1] && !this.options.rebuild) {
-          console.log('Source didn`t change, skip app building');
-          fs.unlinkSync(tmpFilename);
-        } else {
-          throw new Error('Had to break it');
-          console.log('> Build and install mobile app');
-          fs.renameSync(tmpFilename, archFilename);
-          //const params = [this.sourcePath];
-          //if (this.options.ignorePattern) {
-          //  params.push(`--ignore=${this.options.ignorePattern}`);
-          //}
-          return spawnPromise(`../mocha-mobile-apps/${this.options.arch}/prepare-${this.options.arch}-test.sh`,
-            [appSrcPath]);
+      .then(result => {
+        if(result === 'skip') {
+          console.log('  Source didn`t change, skip app building');
+          return result;
+        } 
+        
+        console.log('> Build and install mobile app');
+        fs.renameSync(tmpFilename, archFilename);
+        return spawnPromise(`../mocha-mobile-apps/${this.options.arch}/prepare-${this.options.arch}-test.sh`,
+          [appSrcPath]);
+      })
+      .then(result => {
+        if(result !== 'skip') {
+          fs.writeFile(sourceStatFilename, sourceStat, function(err) {
+            if(err) {
+              return console.log(err);
+            }
+          });
         }
       });
     }
