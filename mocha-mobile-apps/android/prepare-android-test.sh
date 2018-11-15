@@ -34,7 +34,7 @@ adb logcat -c
 adb $TARGET install -r "$TEST_APP_BASE_DIR/app/build/outputs/apk/debug/app-debug.apk"
 
 # Start the test app without parameter in order to copy the assets to a writable location
-adb $TARGET shell 'am start -n testdomain.test.mochamobile/testdomain.test.mochamobile.MainActivity' > /dev/null
+adb $TARGET shell 'am start -n testdomain.test.mochamobile/testdomain.test.mochamobile.MainActivity -e "install" "true"' > /dev/null
 
 # Wait for the installation result to appear in the log
 adb $TARGET shell 'logcat -b main -v raw -s MochaMobile:V | (grep -q "^COPYASSETS:" && kill -2 $(ps | grep "logcat" | sed -r "s/[[:graph:]]+[ \t]+([0-9]+).*/\1/g"))' < /dev/null
@@ -46,7 +46,7 @@ parseLogcat() {
 RESULT=$(parseLogcat | sed 's/\r$//')
 
 # Echo the raw stdout and stderr
-adb $TARGET shell 'logcat -d -b main -v raw -s MochaMobile:V'
+adb $TARGET shell 'logcat -d -b main -v raw -s MochaMobile:V | sed -E ''s/^COPYASSETS:[A-Z]*//'' '
 
 # if [ $RESULT -eq 1 ]; then
 #   exit $RESULT
