@@ -21,7 +21,7 @@ const spawnPromise = (cmd, arg) => new Promise(((resolve, reject) => {
 const defaultOptions = {
   doPrepare: true,
   doRun: true,
-  ignorePattern: '',
+  ignores: [],
   mochaParams: [],
 };
 
@@ -44,6 +44,8 @@ class MochaMobile {
     if (!this.options.mochaParams.filter(opt => colorOptions.includes(opt)).length) {
       this.options.mochaParams.push('--colors');
     }
+
+    this.options.ignores.push('**/node_modules/mocha-mobile/mocha-mobile-apps/**/*');
   }
 
   run() {
@@ -56,17 +58,12 @@ class MochaMobile {
       const sourceStatFilename = `${appSrcTmpPath}/sourcestat`;
       const archFilename = `${appSrcPath}/appsrc.zip`;
 
-      let ignores = ['**/node_modules/mocha-mobile/mocha-mobile-apps/**/*'];
-      if (this.options.ignorePattern) {
-        ignores = ignores.concat(this.options.ignorePattern.split(','));
-      }
-
       let sourceStat;
 
       execution = execution.then(() => new Promise((resolve, reject) => {
         console.log('> Prepare app sources');
         glob('**/*', {
-          cwd: this.sourcePath, ignore: ignores, follow: true, mark: true,
+          cwd: this.sourcePath, ignore: this.options.ignores, follow: true, mark: true,
         },
         (error, files) => {
           if (error) {
@@ -90,7 +87,7 @@ class MochaMobile {
 
             return archive
               .glob('**/*', {
-                cwd: this.sourcePath, ignore: ignores, follow: true, mark: true,
+                cwd: this.sourcePath, ignore: this.options.ignores, follow: true, mark: true,
               })
               .finalize();
           }

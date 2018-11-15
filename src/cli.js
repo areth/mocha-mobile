@@ -3,13 +3,14 @@
 'use strict';
 
 const program = require('commander');
+const fs = require('fs');
 const MochaMobile = require('./');
 
 program
-  .version('0.0.2')
+  .version('0.0.5')
   .usage('--arch <architecture> [options] [mocha params ...]')
   .option('-a, --arch <architecture>', 'Architecture to run test (android|ios)')
-  .option('--ignore <pattern>', 'Files pattern to ignore during mobile app assembling `:!*.scc:.*:<dir>_*:!CVS`')
+  .option('--ignore <pattern>', 'Files pattern to ignore during mobile app assembling `**/build/*`')
   .option('--onlyprep', 'Only prepare test, don\'t run it')
   .option('--onlyrun', 'Only run test, don\'t prepare it (test has to be prepared)');
 
@@ -34,11 +35,26 @@ if (!program.arch) {
   program.help(() => 'error: option `-a, --arch <architecture>` argument missing\n');
 }
 
+let ignores = [];
+if (program.ignore) {
+  ignores = ignores.concat(program.ignore.split(','));
+}
+const ignoresFile = '.mmignore';
+if (fs.existsSync(ignoresFile)) {
+  try {
+    ignores = ignores.concat(fs.readFileSync(ignoresFile).toString().split('\n')
+      .map(line => line.split('#')[0].trim())
+      .filter(line => line.length));
+  } catch (err) {
+    throw new Error(`mocha-mobile failed to read .mmignore: ${err}`);
+  }
+}
+
 const test = new MochaMobile(process.cwd(), {
   arch: program.arch,
   doPrepare: program.onlyprep || !program.onlyrun,
   doRun: program.onlyrun || !program.onlyprep,
-  ignorePattern: program.ignore,
+  ignores,
   mochaParams: mochaArgs,
 });
 test.run()
