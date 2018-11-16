@@ -1,6 +1,6 @@
 {
   "name": "mocha-mobile",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Test a node.js library on mobile devices with Mocha",
   "main": "src/index.js",
   "scripts": {
