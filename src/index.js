@@ -35,7 +35,7 @@ class MochaMobile {
     }
 
     if (this.options.arch !== 'android') {
-      throw new Error('Sorry, only android architecture implemented so far.');
+      throw new Error('Only android architecture implemented for now.');
     }
 
     // force use colors due to colors are switched off by dafault
