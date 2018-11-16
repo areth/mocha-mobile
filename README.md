@@ -1,7 +1,7 @@
 # mocha-mobile
 Test Node.js applications on mobile devices.
 
-Mocha-mobile runs mocha-compatible tests within mobile device.
+Mocha-mobile runs mocha-compatible tests within a mobile device.
 
 *Supports only Android for now.*
 
@@ -14,7 +14,7 @@ You'll need [Android Studio](https://developer.android.com/studio/install.html) 
 
 You should set the Environment variables required to build Android Applications from the command line: the `ANDROID_HOME` variable pointing to your `android-sdk` path and the `ANDROID_NDK_HOME` variable pointing to the installed NDK path (it usually is `$ANDROID_HOME/ndk-bundle`) . You should also add `$ANDROID_HOME/platform-tools`, `$ANDROID_HOME/tools` and `$ANDROID_HOME/tools/bin` to the `PATH` environment variable.
 
-### iOS prerequisites
+### iOS
 
 You'll need a macOS development machine, an iOS arm64 physical device running iOS 11.0 or greater and a valid iOS Development certificate installed.
 
@@ -44,8 +44,8 @@ Additional file exceptions may be specified in `.mmignore`
 
 ## How it works
 It uses precompiled libraries for mobile devices to run node.js code. Mocha-mobile command proceeds the following steps:
-* deploys native app with precompiled library and Node.js application as a zipped asset to the device
-* unzips Node.js application within device and executes Mocha over it
+* deploys native app with precompiled library and Node.js application as a zipped asset to a device
+* unzips a Node.js application within device and executes Mocha over it
 * displays tests results in a host terminal
 
 ## License
