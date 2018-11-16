@@ -44,7 +44,7 @@ Additional file exceptions may be specified in `.mmignore`
 
 ## How it works
 It uses precompiled libraries for mobile devices to run node.js code. Mocha-mobile command proceeds the following steps:
-* deploys native app with precompiled library to device with Node.js application as a zipped asset
+* deploys native app with precompiled library and Node.js application as a zipped asset to the device
 * unzips Node.js application within device and executes Mocha over it
 * displays tests results in a host terminal
 
