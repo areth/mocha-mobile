@@ -15,7 +15,10 @@
   "keywords": [
     "mobile",
     "test",
-    "mocha"
+    "mocha",
+    "android",
+    "ios",
+    "native"
   ],
   "author": "",
   "license": "MIT",
