@@ -1,5 +1,5 @@
 # mocha-mobile
-Test Node.js applications on mobile devices.
+Test Node.js applications on mobile devices with Mocha.
 
 Mocha-mobile runs mocha-compatible tests within a mobile device.
 
