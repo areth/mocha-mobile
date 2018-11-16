@@ -7,7 +7,7 @@ const fs = require('fs');
 const MochaMobile = require('./');
 
 program
-  .version('0.0.5')
+  .version('0.0.6')
   .usage('--arch <architecture> [options] [mocha params ...]')
   .option('-a, --arch <architecture>', 'Architecture to run test (android|ios)')
   .option('--ignore <pattern>', 'Files pattern to ignore during mobile app assembling `**/build/*`')
